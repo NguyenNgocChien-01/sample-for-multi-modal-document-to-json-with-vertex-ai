@@ -1,0 +1,43 @@
+
+SchemaVersion: '1.0'
+SageMaker:
+  PythonSDK:
+    Modules:
+      RemoteFunction:
+        # role arn is not required if in SageMaker Notebook instance or SageMaker Studio
+        # Uncomment the following line and replace with the right execution role if in a local IDE
+        RoleArn: arn:aws:iam::157320905741:role/SageMakerExecutionRole-Biwoco
+        S3RootUri: s3://electric-bill-dataset
+        ImageUri: 542918446943.dkr.ecr.us-west-2.amazonaws.com/sagemaker-distribution-prod:3.1.0-gpu        
+        InstanceType: ml.g6.12xlarge # default instance type to use
+        Dependencies: ./requirements.txt
+        IncludeLocalWorkDir: true
+        PreExecutionCommands:
+        - "pip install packaging"
+        - "sudo mkdir -p /opt/ml/cache"
+        - "sudo chmod -R 777 /opt/ml/cache"
+        - "sudo mkdir -p /opt/ml/checkpoints"
+        - "sudo chmod -R 777 /opt/ml/checkpoints"
+        - "sudo mkdir -p /opt/ml/model"
+        - "sudo chmod -R 777 /opt/ml/model"
+        - "sudo chown sagemaker-user:sagemaker-user /opt/ml/model"
+        - "echo 'Granted checkpoints directory permissions'"
+        CustomFileFilter:
+          IgnoreNamePatterns:
+          - "*.ipynb"
+          - "__pycache__"
+          - "data"
+          - "images"
+          - "bin"
+          - "models"
+          - "results"
+          - ".git"
+        EnvironmentVariables: {"SIZE_FACTOR": "8", "MAX_PIXELS": "602112", "CUDA_VISIBLE_DEVICES": "0,1,2,3", "NPROC_PER_NODE": "4", "USE_HF_TRANSFER": "1"}
+        Tags:
+          - Key: 'purpose'
+            Value: 'fine-tuning'
+          - Key: 'model_id'
+            Value: Qwen/Qwen2.5-VL-7B-Instruct
+          - Key: 'dataset'
+            Value: s3://electric-bill-dataset/data/swift_dataset
+

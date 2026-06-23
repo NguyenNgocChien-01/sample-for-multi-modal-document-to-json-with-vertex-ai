@@ -159,3 +159,8 @@ def check_and_enable_docker_access_sagemaker_studio(use_local_mode, session):
             print(f"SageMaker Studio domain ({domain_id}) docker access: {docker_access}")
             if docker_access_disabled:
                 print("Failed to enable Docker Access on SageMaker Studio domain. Please enable it manually or ask your administrator. Docker access is required to run in local mode. https://docs.aws.amazon.com/sagemaker/latest/dg/studio-updated-local-get-started.html#studio-updated-local-enable")
+
+
+
+
+
