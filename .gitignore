@@ -4,3 +4,7 @@ data
 **/**/__pycache__
 **/**/.ipynb_checkpoints
 docker-artifacts/**-dockerfile.txt
+
+model
+results.jsonl
+config.yaml

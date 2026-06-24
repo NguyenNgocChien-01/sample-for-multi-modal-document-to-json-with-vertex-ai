@@ -43,7 +43,7 @@ def get_pil_image(im, dataset_base_dir=""):
             im = os.path.join(dataset_base_dir, im.get("path", None))
 
     image = PIL.Image.open(im)
-    return image.resize((400, 600))
+    return image.resize((800, 1200))
 
 def get_dict_str_aligned(first_dict, second_dict):
     keys = set(list(first_dict.keys()) + list(second_dict.keys()))

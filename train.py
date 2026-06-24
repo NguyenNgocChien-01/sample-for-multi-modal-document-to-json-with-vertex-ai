@@ -1,4 +1,6 @@
-# train.py
+import sys
+sys.modules['torch_xla'] = None
+
 import os
 import json
 import argparse
@@ -16,13 +18,6 @@ from swift.llm import sft_main
 
 
 def fix_image_paths(json_path: str, dataset_dir: str) -> None:
-    """
-    Chuyển các path tương đối trong field images/videos/audios của dataset JSON
-    thành path tuyệt đối, trỏ vào dataset_dir thực tế trên container đang chạy.
-
-    Idempotent: nếu path đã là tuyệt đối, giữ nguyên (tránh double-join nếu
-    hàm vô tình được gọi 2 lần trên cùng file).
-    """
     with open(json_path, encoding="utf-8") as f:
         data = json.load(f)
 
@@ -79,21 +74,22 @@ def main():
         "--train_type", "lora",
         "--use_dora", "true",
         "--output_dir", output_dir,
-        "--max_length", "4096",
+        "--max_length", "2048",
+        "--max_pixels", "262144",
         "--dataset", train_data_local_path,
         "--val_dataset", validation_data_local_path,
         "--save_steps", "50",
         "--logging_steps", "5",
         "--num_train_epochs", "4",
         "--lora_dtype", "bfloat16",
-        "--per_device_train_batch_size", "4",
+        "--per_device_train_batch_size", "1",
         "--per_device_eval_batch_size", "1",
+        "--gradient_accumulation_steps", "4",
         "--learning_rate", "1e-4",
+        "--gradient_checkpointing", "true",
         "--target_modules", "all-linear",
-        "--use_hf", "true",
         "--warmup_ratio", "0.05",
         "--save_total_limit", "3",
-        "--gradient_accumulation_steps", "1",
         "--freeze_vit", "true",
         "--freeze_llm", "false",
         "--freeze_aligner", "true",
@@ -102,14 +98,14 @@ def main():
 
     result = sft_main(argv)
     best_checkpoint = result["best_model_checkpoint"]
-    print(f"✅ Best checkpoint (local): {best_checkpoint}")
+    print(f"Best checkpoint (local): {best_checkpoint}")
 
     output_gcs_uri = os.environ.get("AIP_MODEL_DIR", "gs://electric-bill-dataset-gcs/output")
     subprocess.run(
         ["gsutil", "-m", "cp", "-r", output_dir + "/*", output_gcs_uri],
         check=True
     )
-    print(f"✅ Uploaded to {output_gcs_uri}")
+    print(f"Uploaded to {output_gcs_uri}")
 
 if __name__ == "__main__":
     main()

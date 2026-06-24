@@ -127,3 +127,21 @@ def process_run(run, file, results_dir, expected_num_rows=-1):
     # except Exception as e:
     #     print(f"Error processing {file}: {e}")
     #     return None, expected_num_rows
+
+
+
+def fix_local_image_paths(row,img_dir):
+    import os
+    new_images = []
+    for img in row["images"]:
+        path = img["path"]
+        filename = os.path.basename(path)
+        new_path = os.path.join(img_dir, filename)
+        new_images.append({"bytes": None, "path": new_path})
+    return new_images
+
+def safe_parse(s):
+    try:
+        return json.loads(s) if isinstance(s, str) else s
+    except:
+        return {}

@@ -210,3 +210,48 @@ def list_available_models(bucket_name: str, model_prefix: str) -> pd.DataFrame:
     # increase width of column key for df,
     pd.set_option('display.max_colwidth', 200)
     return df
+
+
+def list_gcs_models(gcs_model_dir: str, project_id: str = None) -> pd.DataFrame:
+    """
+    Liệt kê checkpoint folders trong GCS.
+    Thay thế list_available_models() cho Vertex AI workflow.
+    """
+    import sys
+    
+    # try gsutil / gcloud CLI t
+    for cmd in [
+        ["gsutil", "ls", gcs_model_dir.rstrip("/") + "/"],
+        ["gcloud", "storage", "ls", gcs_model_dir.rstrip("/") + "/"],
+    ]:
+        try:
+            result = subprocess.run(
+                cmd,
+                capture_output=True,
+                text=True,
+                shell=(sys.platform == "win32"),  # cần trên Windows
+            )
+            if result.returncode == 0:
+                lines = [
+                    l.strip()
+                    for l in result.stdout.splitlines()
+                    if l.strip()
+                ]
+                return pd.DataFrame({"Key": lines})
+        except FileNotFoundError:
+            continue
+
+    # Fallback: Python SDK
+    from google.cloud import storage as gcs
+    client      = gcs.Client(project=project_id)
+    bucket_name = gcs_model_dir.replace("gs://", "").split("/")[0]
+    prefix      = "/".join(gcs_model_dir.replace("gs://", "").split("/")[1:]).rstrip("/") + "/"
+
+    blobs = client.list_blobs(bucket_name, prefix=prefix, delimiter="/")
+    rows  = [{"Key": f"gs://{bucket_name}/{p}"} for p in blobs.prefixes]
+    for b in blobs:
+        rows.append({"Key": f"gs://{bucket_name}/{b.name}"})
+
+    df = pd.DataFrame(rows) if rows else pd.DataFrame(columns=["Key"])
+
+    return df

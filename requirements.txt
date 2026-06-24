@@ -20,7 +20,8 @@ tensorboardX
 tensorboard
 google-cloud-aiplatform
 google-cloud-storage
-ms-swift==3.5.3
+ms-swift==3.2.2
 
 pydantic==2.10.0 
 pydantic-core==2.27.0
+matplotlib==3.8.4 

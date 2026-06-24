@@ -1,8 +1,0 @@
-{
-  "bucket_name": "electric-bill-dataset",
-  "region": "us-west-2",
-  "s3_prefix": "electric-bill",
-  "s3_documents_prefix": "data/documents",
-  "s3_labels_prefix": "data/labels",
-  "s3_output_prefix": "data/swift_dataset"
-}
