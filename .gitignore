@@ -5,6 +5,11 @@ data
 **/**/.ipynb_checkpoints
 docker-artifacts/**-dockerfile.txt
 
-model
-results.jsonl
+
+*.jsonl
 config.yaml
+gcs_config.json
+
+models/output/
+*.pt
+*.safetensors
