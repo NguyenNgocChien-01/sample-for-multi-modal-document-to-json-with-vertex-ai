@@ -1,55 +1,51 @@
 #!/usr/bin/env bash
 set -x
-# This script builds a Docker image and pushes it to ECR for use with SageMaker
-# Arguments: repo-name, version-tag, region, account
+# This script builds a Docker image and pushes it to Artifact Registry for use with Vertex AI
+# Arguments: repo-name, version-tag, region, project-id
 
 reponame=$1
 versiontag=$2
 regionname=$3
-account=$4
+project=$4
 
 # Validate input parameters
-if [ "$reponame" == "" ] || [ "$versiontag" == "" ] || [ "$regionname" == "" ] || [ "$account" == "" ]
+if [ "$reponame" == "" ] || [ "$versiontag" == "" ] || [ "$regionname" == "" ] || [ "$project" == "" ]
 then
-   echo "Usage: $0 <repo-name> <version-tag> <region> <account>"
+   echo "Usage: $0 <repo-name> <version-tag> <region> <project-id>"
    exit 1
 fi
 
-# Verify AWS CLI access and ECR permissions
-echo "Verifying AWS credentials and ECR permissions..."
-aws ecr get-authorization-token > /dev/null 2>&1
-if [ $? -ne 0 ]; then
-   echo "Error: Unable to get ECR authorization token. Check AWS credentials and permissions."
-   exit 1
-fi
+fullname="${regionname}-docker.pkg.dev/${project}/${reponame}/inference:${versiontag}"
 
-fullname="${account}.dkr.ecr.${regionname}.amazonaws.com/${reponame}:${versiontag}"
-
-# Check if repository exists in ECR, create if it doesn't
-echo "Checking ECR repository..."
-aws ecr describe-repositories --repository-names "${reponame}" > /dev/null 2>&1
+# Check if repository exists in Artifact Registry, create if it doesn't
+echo "Checking Artifact Registry repository..."
+gcloud artifacts repositories describe "${reponame}" --location="${regionname}" --project="${project}" > /dev/null 2>&1
 if [ $? -ne 0 ]
 then
-   echo "Creating ECR repository ${reponame}..."
-   aws ecr create-repository --repository-name "${reponame}" > /dev/null
+   echo "Creating Artifact Registry repository ${reponame}..."
+   gcloud artifacts repositories create "${reponame}" \
+       --repository-format=docker \
+       --location="${regionname}" \
+       --project="${project}" \
+       --quiet
    if [ $? -ne 0 ]; then
-       echo "Error: Failed to create ECR repository"
+       echo "Error: Failed to create Artifact Registry repository"
        exit 1
    fi
 fi
 
-# Login to ECR
-echo "Logging into ECR..."
-aws ecr get-login-password --region $regionname | docker login --username AWS --password-stdin ${account}.dkr.ecr."${regionname}".amazonaws.com
+# Configure Docker to authenticate with Artifact Registry
+echo "Configuring Docker auth for Artifact Registry..."
+gcloud auth configure-docker "${regionname}-docker.pkg.dev" --quiet
 if [ $? -ne 0 ]; then
-   echo "Error: ECR login failed"
+   echo "Error: Docker auth configuration failed"
    exit 1
 fi
 
 # Build docker image
 echo "Building docker image..."
 pwd
-docker build -f Dockerfile --network sagemaker -t ${reponame} .
+docker build -f Dockerfile -t ${reponame} .
 if [ $? -ne 0 ]; then
    echo "Error: Docker build failed"
    exit 1
@@ -63,8 +59,8 @@ if [ $? -ne 0 ]; then
    exit 1
 fi
 
-# Push to ECR
-echo "Pushing image to ECR..."
+# Push to Artifact Registry
+echo "Pushing image to Artifact Registry..."
 docker push ${fullname}
 if [ $? -ne 0 ]; then
    echo "Error: Docker push failed"
@@ -73,16 +69,11 @@ fi
 
 # Save image URI to file
 echo "Saving image URI to file..."
-echo "${fullname}" > qwen2-finetuned-vl-dockerfile.txt
+echo "${fullname}" > vertex-image-uri.txt
 if [ $? -ne 0 ]; then
    echo "Error: Failed to save image URI to file"
    exit 1
 fi
 
-# # Clean up local images
-# echo "Cleaning up local images..."
-# docker rmi ${reponame}
-# docker rmi ${fullname}
-
 echo "Successfully built and pushed image: ${fullname}"
-echo "Image URI saved to: qwen2-finetuned-vl-dockerfile.txt"
+echo "Image URI saved to: vertex-image-uri.txt"

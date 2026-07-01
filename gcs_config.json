@@ -1,6 +1,7 @@
 {
-    "project_id": "first-orc-chien",
-    "bucket_name": "electric-bill-dataset-gcs",
-    "region": "asia-southeast1",
-    "gcs_output_prefix": "data/swift_dataset"
+  "project_id": "first-orc-chien",
+  "bucket_name": "electric-bill-dataset-gcs",
+  "region": "asia-southeast1",
+  "gcs_output_prefix": "data/swift_dataset",
+  "gcs_model_dir": "output/model"
 }
