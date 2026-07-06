@@ -13,3 +13,10 @@ gcs_config.json
 models/output/
 *.pt
 *.safetensors
+*.jsonl
+LICENSE.txt
+01_optional_convert_fatura2_to_hf_dataset.ipynb
+document-to-json-finetune-vision-llms-overview.png
+config.yaml
+CLOUD_RUN_DEPLOY_GUIDE.md
+CONTRIBUTING.md
