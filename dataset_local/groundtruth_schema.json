@@ -1,0 +1,131 @@
+{
+  "$schema": "http://json-schema.org/schema#",
+  "type": "object",
+  "properties": {
+    "account_holder_name": {
+      "type": "string"
+    },
+    "account_number": {
+      "type": "string"
+    },
+    "amount_due": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "average_daily_usage_kwh": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "bill_due_date": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "bill_issue_date": {
+      "type": "string"
+    },
+    "billing_period_end": {
+      "type": "string"
+    },
+    "billing_period_start": {
+      "type": "string"
+    },
+    "document_type": {
+      "type": "string"
+    },
+    "nmi": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "provider_abn": {
+      "type": "string"
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "service_address_postcode": {
+      "type": "string"
+    },
+    "service_address_state": {
+      "type": "string"
+    },
+    "service_address_street": {
+      "type": "string"
+    },
+    "service_address_suburb": {
+      "type": "string"
+    },
+    "supply_charge_days": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "tax_invoice_number": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "total_electricity_kwh": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "total_excl_gst": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "total_gst": {
+      "type": "string"
+    },
+    "total_incl_gst": {
+      "type": [
+        "null",
+        "string"
+      ]
+    },
+    "usage_discount_amount": {
+      "type": "null"
+    },
+    "usage_discount_percent": {
+      "type": "null"
+    }
+  },
+  "required": [
+    "account_holder_name",
+    "account_number",
+    "amount_due",
+    "average_daily_usage_kwh",
+    "bill_due_date",
+    "bill_issue_date",
+    "billing_period_end",
+    "billing_period_start",
+    "document_type",
+    "nmi",
+    "provider_abn",
+    "provider_name",
+    "service_address_postcode",
+    "service_address_state",
+    "service_address_street",
+    "service_address_suburb",
+    "supply_charge_days",
+    "tax_invoice_number",
+    "total_electricity_kwh",
+    "total_excl_gst",
+    "total_gst",
+    "total_incl_gst",
+    "usage_discount_amount",
+    "usage_discount_percent"
+  ]
+}

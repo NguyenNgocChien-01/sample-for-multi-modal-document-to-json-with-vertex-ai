@@ -1,8 +1,12 @@
 {
-    "accessibility.signals.chatResponseReceived": {
-        "sound": "off"
-    },
-    "accessibility.signals.chatUserActionRequired": {
-        "sound": "off"
-    }
+  "audioCues.enabled": false,
+  "accessibility.signals.chatResponseReceived": {
+    "sound": "off"
+  },
+  "accessibility.signals.chatUserActionRequired": {
+    "sound": "off"
+  },
+  "accessibility.signals.progress": {
+    "sound": "off"
+  }
 }

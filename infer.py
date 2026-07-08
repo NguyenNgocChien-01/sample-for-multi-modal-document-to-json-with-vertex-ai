@@ -117,7 +117,7 @@ def main():
     for d in (dataset_dir, output_dir, models_dir):
         d.mkdir(parents=True, exist_ok=True)
 
-    # download test dataset (JSON + images/) from GCS
+    # download test dataset (JSON + images/) from Google cloud storage
     subprocess.run(["gsutil", "-m", "rsync", "-r", args.dataset_gcs, str(dataset_dir)], check=True)
 
     test_data_path = dataset_dir / args.test_data_path
