@@ -48,17 +48,17 @@ GCS (raw dataset)
 
 ## Implementation Workflow
 
-1. **Dataset conversion to Hugging Face format** (optional): `01_optional_convert_fatura2_to_hf_dataset.ipynb`
+1. **Configuration** : `01_gcs_config.json`
 2. **Creation of Swift-compatible training data**: [02_create_custom_dataset_swift.ipynb](02_create_custom_dataset_swift.ipynb)
 3. **Model fine-tuning on Vertex AI**: [03_finetune_swift.ipynb](03_finetune_swift.ipynb)
 4. **Batch inference on Vertex AI**: [04_run_batch_inference.ipynb](04_run_batch_inference.ipynb)
 5. **Model evaluation**: [05_evaluate_model.ipynb](05_evaluate_model.ipynb)
-6. **Deployment (merge → build → deploy)**: [06_deploy_pipeline_bill.ipynb](06_deploy_pipeline_bill.ipynb)
+6. **Deployment (merge → build → deploy)**: [06_deploy_pipeline.ipynb](06_deploy_pipeline_bill.ipynb)
 7. **Consume the Cloud Run endpoint**: [07_consume_model_cloudrun.ipynb](07_consume_model_cloudrun.ipynb)
 
 ## Prerequisites
 
-* A Python 3.11 or 3.12 environment with Jupyter (tested on Vertex AI Workbench and Cloud Shell).
+* A Python 3.12 environment with Jupyter (tested on Vertex AI Workbench and Cloud Shell).
 * A GCP project with billing enabled and the following APIs turned on: Vertex AI, Cloud Build, Cloud Run, Artifact Registry, Cloud Storage.
 * `gcloud` CLI installed and authenticated, or run everything from **Cloud Shell** — commands are written for a Linux shell; running `gcloud` from PowerShell on Windows breaks flags like `--set-env-vars`/`--startup-probe` because of different quoting rules.
 * GPU quota in the target region: A100 or L4 for training/batch inference (Vertex AI), and L4 for serving (Cloud Run).
@@ -109,15 +109,15 @@ Because the model is baked into the image, cold start loads it from local disk i
 - Edit-distance heatmaps per entity
 - Side-by-side comparison across model versions
 
-![Evaluation Heatmap for Character Edit Distance](images\evaluation-heatmap-char-edit-distance.png)
+![Evaluation Heatmap for Character Edit Distance](images/evaluation-heatmap-char-edit-distance.png)
 
-![Exact Match per Entity](images\evaluation-exact-match.png)
+![Exact Match per Entity](images/evaluation-exact-match.png)
 
-### Model Comparison
 
-|    | model | pretty_name | rouge1 | rouge2 | rougeL | rougeLsum | model_name | accuracy (exact match) | cer_score |
-|---:|---|---|---:|---:|---:|---:|---|---:|---:|
-|    |   |   |   |   |   |   |   |   |   |
+
+| model_name | accuracy (exact match) | cer_score |
+|------------|------------------------:|----------:|
+| Qwen2.5-VL-3B | 0.91708 | 0.047847 |
 
 ## Notebooks and Structure
 
@@ -168,4 +168,4 @@ Because the model is baked into the image, cold start loads it from local disk i
 * Table extraction metrics (TEDS, GriDTS) for structured table fields
 * Multi-adapter serving (single image, multiple LoRA adapters selected at request time)
 
-inference_performance_report.csv
+![inference_performance_report.csv](inference_performance_report.csv)
