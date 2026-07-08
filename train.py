@@ -38,8 +38,8 @@ def fix_image_paths(json_path: str, dataset_dir: str) -> None:
     with open(json_path, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False)
 
-    print(f"[fix_image_paths] {json_path}: đã chuyển {fixed_count} path "
-          f"tương đối -> tuyệt đối (dataset_dir={dataset_dir})")
+    print(f"[fix_image_paths] {json_path}: {fixed_count} path "
+          f" -> (dataset_dir={dataset_dir})")
 
 
 def main():
