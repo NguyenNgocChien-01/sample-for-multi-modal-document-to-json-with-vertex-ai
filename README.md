@@ -168,4 +168,4 @@ Because the model is baked into the image, cold start loads it from local disk i
 * Table extraction metrics (TEDS, GriDTS) for structured table fields
 * Multi-adapter serving (single image, multiple LoRA adapters selected at request time)
 
-![inference_performance_report.csv](inference_performance_report.csv)
+[inference_performance_report.csv](inference_performance_report.csv)
