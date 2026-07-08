@@ -1,0 +1,20 @@
+steps:
+  - name: 'gcr.io/cloud-builders/gsutil'
+    entrypoint: 'bash'
+    args:
+      - '-c'
+      - 'mkdir -p model_data && gsutil -m cp -r "${_MODEL_PATH}/*" model_data/'
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - build
+      - -t
+      - ${_IMAGE_TAG}
+      - .
+
+images:
+  - '${_IMAGE_TAG}'
+timeout: 3600s
+options:
+  machineType: 'E2_HIGHCPU_8'
+  diskSizeGb: 100

@@ -1,0 +1,16 @@
+steps:
+- name: 'us-docker.pkg.dev/vertex-ai/training/pytorch-gpu.2-4.py310:latest'
+  entrypoint: bash
+  args:
+  - -c
+  - |
+    set -e
+    chmod +x /workspace/run_merge.sh
+    bash /workspace/run_merge.sh --adapter_path "${_ADAPTER_PATH}" --output_gcs_path "${_OUTPUT_GCS_PATH}"
+substitutions:
+  _ADAPTER_PATH: ''
+  _OUTPUT_GCS_PATH: ''
+options:
+  machineType: E2_HIGHCPU_32
+  diskSizeGb: 100
+timeout: 3600s
